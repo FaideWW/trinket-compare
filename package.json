@@ -1,0 +1,29 @@
+{
+  "name": "trinket-compare",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "ghttps://github.com/faideww/trinket-compare.git",
+  "author": "Michael Ko <michael@faide.net>",
+  "license": "MIT",
+  "devDependencies": {
+    "css-loader": "^0.28.4",
+    "csv-loader": "^2.1.1",
+    "extract-text-webpack-plugin": "^2.1.2",
+    "html-webpack-plugin": "^2.28.0",
+    "json-loader": "^0.5.4",
+    "style-loader": "^0.18.2",
+    "webpack": "^2.6.1",
+    "webpack-dev-server": "^2.4.5"
+  },
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "d3": "^4.9.1",
+    "lodash": "^4.17.4"
+  },
+  "scripts": {
+    "build": "webpack",
+    "build:production": "webpack -p",
+    "clean": "rm -rf dist/",
+    "dev-server": "webpack-dev-server --open"
+  }
+}
