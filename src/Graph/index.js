@@ -11,7 +11,7 @@ export default function graph(dataCSV) {
 
   renderD3Graph(graphSVG, dataCSV);
 
-  console.log(dataCSV);
+  // console.log(dataCSV);
 
   return component;
 }

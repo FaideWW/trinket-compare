@@ -24,8 +24,8 @@ export default function renderD3Graph(svgSelector, dataCSV) {
   const containerHeight = height + MARGIN_LEFT + MARGIN_RIGHT;
 
   svg
-    .attr('width', width)
-    .attr('height', height);
+    .attr('width', CONTAINER_WIDTH)
+    .attr('height', containerHeight);
 
   const g = svg.append('g').attr('transform', `translate(${MARGIN_LEFT},${MARGIN_TOP})`);
 
@@ -52,7 +52,7 @@ export default function renderD3Graph(svgSelector, dataCSV) {
     .enter().append('g')
       .attr('fill', d => z(d[0]))
     .selectAll('rect')
-    .data(d => d)
+    .data((d) => { console.log(d); return d; })
     .enter().append('rect')
       .attr('x', d => x(d[1]))
       .attr('y', d => y(d[0]))
