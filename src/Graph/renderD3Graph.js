@@ -10,7 +10,7 @@ const BAR_HEIGHT = 20;
 
 const MARGIN_TOP = 30;
 const MARGIN_BOTTOM = 20;
-const MARGIN_LEFT = 40;
+const MARGIN_LEFT = 100;
 const MARGIN_RIGHT = 20;
 
 const COLOR_ARRAY = ['#98abc5', '#8a89a6', '#7b6888', '#6b486b', '#a05d56', '#d0743c', '#ff8c00'];
@@ -77,14 +77,11 @@ function mapToRelativeValues(data) {
 export default function renderD3Graph(svgSelector, dataJSON) {
   const svg = select(svgSelector);
 
-  const data = dataJSON.trinkets;
-  const ilevels = getIlevels(data);
-  const trinketNames = getTrinketNames(data);
-  const stacks = getStackData(data, ilevels);
+  const { ilevels, trinketNames, stacks, maxDPS, trinketCount, data } = dataJSON;
 
-  const width = CONTAINER_WIDTH - MARGIN_TOP - MARGIN_BOTTOM;
-  const height = size(data) * (BAR_HEIGHT);
-  const containerHeight = height + MARGIN_LEFT + MARGIN_RIGHT;
+  const width = CONTAINER_WIDTH - MARGIN_LEFT - MARGIN_RIGHT;
+  const height = trinketCount * (BAR_HEIGHT);
+  const containerHeight = height + MARGIN_TOP + MARGIN_BOTTOM;
 
   svg
     .attr('width', CONTAINER_WIDTH)
@@ -106,7 +103,7 @@ export default function renderD3Graph(svgSelector, dataJSON) {
   const bars = stack()
     .keys(ilevels);
 
-  x.domain([0, getMaxDPS(data)]).nice();
+  x.domain([0, maxDPS]).nice();
   y.domain(trinketNames);
   z.domain(ilevels);
 

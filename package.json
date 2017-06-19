@@ -25,6 +25,7 @@
     "build": "webpack",
     "build:production": "webpack -p",
     "clean": "rm -rf dist/",
-    "dev-server": "webpack-dev-server --open"
+    "dev-server": "webpack-dev-server --open",
+    "generate-data": "node scripts/generateTrinketData.js"
   }
 }
