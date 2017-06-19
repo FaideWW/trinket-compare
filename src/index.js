@@ -1,10 +1,16 @@
 import main from './App';
 import header from './Header';
 import graph from './Graph';
-import dataCSV from '../data/test_data.csv';
+import dataJSON from '../data/test_data.json';
+import renderD3Graph from './Graph/renderD3Graph';
+
+const appMountId = 'app';
+
 const app = main(
   header("Guardian Druid DPS Trinket Guide"),
-  graph(dataCSV),
+  graph(dataJSON),
 );
 
-document.body.appendChild(app);
+document.getElementById(appMountId).appendChild(app);
+
+

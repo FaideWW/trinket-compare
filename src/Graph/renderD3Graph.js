@@ -1,3 +1,4 @@
+import { forEach, map, mapValues, size } from 'lodash';
 import { select } from 'd3-selection';
 import { scaleBand, scaleLinear, scaleOrdinal } from 'd3-scale';
 import { max } from 'd3-array';
@@ -5,7 +6,7 @@ import { stack } from 'd3-shape';
 import { axisTop, axisLeft } from 'd3-axis';
 
 const CONTAINER_WIDTH = 960;
-const BAR_HEIGHT = 10;
+const BAR_HEIGHT = 20;
 
 const MARGIN_TOP = 30;
 const MARGIN_BOTTOM = 20;
@@ -14,13 +15,75 @@ const MARGIN_RIGHT = 20;
 
 const COLOR_ARRAY = ['#98abc5', '#8a89a6', '#7b6888', '#6b486b', '#a05d56', '#d0743c', '#ff8c00'];
 
-export default function renderD3Graph(svgSelector, dataCSV) {
-  const svg = select(svgSelector);
-  const [header, ...data] = dataCSV;
+function getIlevels(data) {
+  const ilevels = {};
+  forEach(data, (trinket) => {
+    Object.keys(trinket.results).forEach((result) => {
+      ilevels[result] = true;
+    });
+  });
 
+  return Object.keys(ilevels).map(Number);
+}
+
+function getTrinketNames(data) {
+  return Object.keys(data);
+}
+
+function getStackData(data, ilevels) {
+  return map(data, (trinket, trinketName) => {
+    const relativeTrinketValues = {};
+    let lastValue = 0;
+
+    ilevels.forEach((ilevel) => {
+      if (trinket.results[ilevel] !== undefined) {
+        relativeTrinketValues[ilevel] = trinket.results[ilevel] - lastValue;
+        lastValue = trinket.results[ilevel];
+      } else {
+        relativeTrinketValues[ilevel] = 0;
+      }
+    });
+
+    return Object.assign(
+      { fullName: trinketName },
+      trinket,
+      relativeTrinketValues,
+    );
+  });
+}
+
+function getMaxDPS(data, baselineDPS = 0) {
+  let maxDPS = 0;
+
+  forEach(data, (trinket) => forEach(trinket.results, (result) => {
+    if (result > maxDPS) {
+      maxDPS = result;
+    }
+  }));
+
+  return maxDPS;
+}
+
+function makeNumber(v, fallback) {
+  const n = Number(v);
+
+  return isNaN(n) ? fallback : n;
+}
+
+function mapToRelativeValues(data) {
+  return data.map((d) => d.map((d, i, a) => isNaN(d) ? d : d - makeNumber(a[i - 1], 0)));
+}
+
+export default function renderD3Graph(svgSelector, dataJSON) {
+  const svg = select(svgSelector);
+
+  const data = dataJSON.trinkets;
+  const ilevels = getIlevels(data);
+  const trinketNames = getTrinketNames(data);
+  const stacks = getStackData(data, ilevels);
 
   const width = CONTAINER_WIDTH - MARGIN_TOP - MARGIN_BOTTOM;
-  const height = data.length * (BAR_HEIGHT);
+  const height = size(data) * (BAR_HEIGHT);
   const containerHeight = height + MARGIN_LEFT + MARGIN_RIGHT;
 
   svg
@@ -40,22 +103,23 @@ export default function renderD3Graph(svgSelector, dataCSV) {
   const z = scaleOrdinal()
     .range(COLOR_ARRAY);
 
-  const ilevels = header.slice(1);
+  const bars = stack()
+    .keys(ilevels);
 
-  x.domain([0, max(data, d => max(d.slice(1)))]).nice();
-  y.domain(data.map(d => d[0]));
+  x.domain([0, getMaxDPS(data)]).nice();
+  y.domain(trinketNames);
   z.domain(ilevels);
 
   g.append('g')
     .selectAll('g')
-    .data(stack().keys(ilevels)(data))
+    .data(bars(stacks))
     .enter().append('g')
       .attr('fill', d => z(d[0]))
     .selectAll('rect')
-    .data((d) => { console.log(d); return d; })
+    .data((d) => d)
     .enter().append('rect')
-      .attr('x', d => x(d[1]))
-      .attr('y', d => y(d[0]))
+      .attr('x', d => x(d[0]))
+      .attr('y', d => y(d.data.fullName))
       .attr('width', d => x(d[1]) - x(d[0]))
       .attr('height', d => y.bandwidth());
 
@@ -95,5 +159,4 @@ export default function renderD3Graph(svgSelector, dataCSV) {
     .attr('y', 9.5)
     .attr('dy', '0.32em')
     .text(d => d);
-
 }

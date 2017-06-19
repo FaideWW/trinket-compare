@@ -39,7 +39,10 @@ module.exports = {
     }),
     new ExtractTextPlugin('styles.css'),
     new HtmlWebpackPlugin({
+      inject: false,
+      template: require('html-webpack-template'),
       title: 'Trinket Comparison',
+      appMountId: 'app',
     }),
   ],
   devtool: "cheap-eval-source-map",
