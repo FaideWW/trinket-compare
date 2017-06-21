@@ -77,6 +77,8 @@ function mapToRelativeValues(data) {
 export default function renderD3Graph(svgSelector, dataJSON) {
   const svg = select(svgSelector);
 
+  console.log(dataJSON);
+
   const { ilevels, trinketNames, stacks, maxDPS, trinketCount, data } = dataJSON;
 
   const width = CONTAINER_WIDTH - MARGIN_LEFT - MARGIN_RIGHT;

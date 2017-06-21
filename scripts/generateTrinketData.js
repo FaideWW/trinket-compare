@@ -66,13 +66,15 @@ if (inputfile === undefined) {
 const input = JSON.parse(fs.readFileSync(inputfile, 'utf8'));
 console.log(input);
 
-const ilevels = getIlevels(input);
-const trinketNames = getTrinketNames(input);
-const stacks = getStackData(input, ilevels);
-const maxDPS = getMaxDPS(input);
-const trinketCount = size(input.trinkets);
+const data = mapValues(input, (groupData) => {
+  const ilevels = getIlevels(groupData);
+  const trinketNames = getTrinketNames(groupData);
+  const stacks = getStackData(groupData, ilevels);
+  const maxDPS = getMaxDPS(groupData);
+  const trinketCount = size(groupData.trinkets);
 
-const data = { ilevels, trinketNames, stacks, maxDPS, trinketCount, data: input };
+  return { ilevels, trinketNames, stacks, maxDPS, trinketCount, data: groupData, name: groupData.name };
+})
 
 fs.writeFileSync('data/generated_data.json', JSON.stringify(data));
 console.log('Finished');

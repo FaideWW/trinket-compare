@@ -1,60 +1,66 @@
 {
-  "baselineDPS": 25,
-  "trinkets": {
-    "trinket 1": {
-      "name": "trinket 1",
-      "id": 1,
-      "chest": false,
-      "cloak": false,
-      "results": {
-        "1":  50,
-        "2":  55,
-        "3":  60,
-        "4":  65,
-        "5":  70,
-        "10": 75
-      }
-    },
-    "trinket 1 (chest)": {
-      "name": "trinket 1",
-      "id": 1,
-      "chest": true,
-      "cloak": false,
-      "results": {
-        "1":  50,
-        "2":  55,
-        "3":  60,
-        "4":  65,
-        "5":  70,
-        "10": 75
-      }
-    },
-    "trinket 2": {
-      "name": "trinket 2",
-      "id": 2,
-      "chest": false,
-      "cloak": false,
-      "results": {
-        "1": 60,
-        "2": 65,
-        "3": 70,
-        "4": 75,
-        "5": 80
-      }
-    },
-    "trinket 3": {
-      "name": "trinket 3",
-      "id": 3,
-      "chest": false,
-      "cloak": false,
-      "results": {
-        "1": 40,
-        "2": 45,
-        "3": 50,
-        "4": 55,
-        "5": 60,
-        "7": 65
+  "900_1t_bear": {
+    "name": "1T Bear (900)",
+    "baselineDPS": 25,
+    "trinkets": {
+      "trinket 1": {
+        "name": "trinket 1",
+        "id": 1,
+        "chest": false,
+        "cloak": false,
+        "results": {
+          "1":  50,
+          "2":  55,
+          "3":  60,
+          "4":  65,
+          "5":  70,
+          "10": 75
+        }
+      },
+      "trinket 1 (chest)": {
+        "name": "trinket 1",
+        "id": 1,
+        "chest": true,
+        "cloak": false,
+        "results": {
+          "1":  50,
+          "2":  55,
+          "3":  60,
+          "4":  65,
+          "5":  70,
+          "10": 75
+        }
+      },
+      "trinket 2": {
+        "name": "trinket 2",
+        "id": 2,
+        "chest": false,
+        "cloak": false,
+        "results": {
+          "1": 60,
+          "2": 65,
+          "3": 70,
+          "4": 75,
+          "5": 80
+        }
+      },
+      "trinket 3": {
+        "name": "trinket 3",
+        "id": 3,
+        "chest": false,
+        "cloak": false,
+        "results": {
+          "1": 40,
+          "2": 45,
+          "3": 50,
+          "4": 55,
+          "5": 60,
+          "7": 65
+        }
       }
     }
+  },
+  "900_3t_bear": {
+    "name": "3T Bear (900)"
   }
 }
