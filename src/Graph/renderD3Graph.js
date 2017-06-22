@@ -15,69 +15,8 @@ const MARGIN_RIGHT = 20;
 
 const COLOR_ARRAY = ['#98abc5', '#8a89a6', '#7b6888', '#6b486b', '#a05d56', '#d0743c', '#ff8c00'];
 
-function getIlevels(data) {
-  const ilevels = {};
-  forEach(data, (trinket) => {
-    Object.keys(trinket.results).forEach((result) => {
-      ilevels[result] = true;
-    });
-  });
-
-  return Object.keys(ilevels).map(Number);
-}
-
-function getTrinketNames(data) {
-  return Object.keys(data);
-}
-
-function getStackData(data, ilevels) {
-  return map(data, (trinket, trinketName) => {
-    const relativeTrinketValues = {};
-    let lastValue = 0;
-
-    ilevels.forEach((ilevel) => {
-      if (trinket.results[ilevel] !== undefined) {
-        relativeTrinketValues[ilevel] = trinket.results[ilevel] - lastValue;
-        lastValue = trinket.results[ilevel];
-      } else {
-        relativeTrinketValues[ilevel] = 0;
-      }
-    });
-
-    return Object.assign(
-      { fullName: trinketName },
-      trinket,
-      relativeTrinketValues,
-    );
-  });
-}
-
-function getMaxDPS(data, baselineDPS = 0) {
-  let maxDPS = 0;
-
-  forEach(data, (trinket) => forEach(trinket.results, (result) => {
-    if (result > maxDPS) {
-      maxDPS = result;
-    }
-  }));
-
-  return maxDPS;
-}
-
-function makeNumber(v, fallback) {
-  const n = Number(v);
-
-  return isNaN(n) ? fallback : n;
-}
-
-function mapToRelativeValues(data) {
-  return data.map((d) => d.map((d, i, a) => isNaN(d) ? d : d - makeNumber(a[i - 1], 0)));
-}
-
 export default function renderD3Graph(svgSelector, dataJSON) {
   const svg = select(svgSelector);
-
-  console.log(dataJSON);
 
   const { ilevels, trinketNames, stacks, maxDPS, trinketCount, data } = dataJSON;
 
