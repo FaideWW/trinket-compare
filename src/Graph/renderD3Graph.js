@@ -15,6 +15,31 @@ const MARGIN_RIGHT = 20;
 
 const COLOR_ARRAY = ['#98abc5', '#8a89a6', '#7b6888', '#6b486b', '#a05d56', '#d0743c', '#ff8c00'];
 
+function makeD3Renderer(svgSelector) {
+  const svg = select(svgSelector);
+  const width = CONTAINER_WIDTH - MARGIN_LEFT - MARGIN_RIGHT;
+
+  svg
+    .attr('width', CONTAINER_WIDTH);
+
+  const g = svg.append('g').attr('transform', `translate(${MARGIN_LEFT},${MARGIN_TOP})`);
+
+  const x = scaleLinear()
+    .rangeRound([0, width]);
+
+  const z = scaleOrdinal()
+    .range(COLOR_ARRAY);
+
+  return (data) {
+    const { ilevels, trinketNames, stacks, maxDPS, trinketCount, data } = dataJSON;
+
+    const height = trinketCount * (BAR_HEIGHT);
+    const containerHeight = height + MARGIN_TOP + MARGIN_BOTTOM;
+    svg.attr('height', containerHeight);
+  }
+
+}
+
 export default function renderD3Graph(svgSelector, dataJSON) {
   const svg = select(svgSelector);
 
