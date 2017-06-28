@@ -1,5 +1,5 @@
 const fs = require('fs');
-const { forEach, map, mapValues, size } = require('lodash');
+const { forEach, map, mapValues, size, reduce } = require('lodash');
 
 function getIlevels(data) {
   const ilevels = {};
@@ -16,24 +16,32 @@ function getTrinketNames(data) {
   return Object.keys(data.trinkets);
 }
 
-function getStackData(data, ilevels) {
+function getSortedTrinketNames(stacks) {
+  return stacks.sort((a, b) => a.totalDPS - b.totalDPS).map(stack => stack.fullName);
+}
+
+function getStackData(data, ilevels, baselineDPS = 0) {
   return map(data.trinkets, (trinket, trinketName) => {
     const relativeTrinketValues = {};
     let lastValue = 0;
 
     ilevels.forEach((ilevel) => {
       if (trinket.results[ilevel] !== undefined) {
-        relativeTrinketValues[ilevel] = trinket.results[ilevel] - lastValue;
-        lastValue = trinket.results[ilevel];
+        const relValue = trinket.results[ilevel] - baselineDPS;
+        relativeTrinketValues[ilevel] = Math.max(relValue - lastValue, 0);
+        lastValue = relValue;
       } else {
         relativeTrinketValues[ilevel] = 0;
       }
     });
 
     return Object.assign(
-      { fullName: trinketName },
+      {
+        fullName: trinketName,
+        totalDPS: reduce(relativeTrinketValues, ((acc, v) => acc + v), 0),
+      },
       trinket,
-      relativeTrinketValues
+      relativeTrinketValues,
     );
   });
 }
@@ -42,8 +50,9 @@ function getMaxDPS(data, baselineDPS = 0) {
   let maxDPS = 0;
 
   forEach(data.trinkets, (trinket) => forEach(trinket.results, (result) => {
-    if (result > maxDPS) {
-      maxDPS = result;
+    const relResult = result - baselineDPS;
+    if (relResult > maxDPS) {
+      maxDPS = relResult;
     }
   }));
 
@@ -67,10 +76,11 @@ const input = JSON.parse(fs.readFileSync(inputfile, 'utf8'));
 console.log(input);
 
 const data = mapValues(input, (groupData) => {
+  const baselineDPS = groupData.baselineDPS;
   const ilevels = getIlevels(groupData);
-  const trinketNames = getTrinketNames(groupData);
-  const stacks = getStackData(groupData, ilevels);
-  const maxDPS = getMaxDPS(groupData);
+  const stacks = getStackData(groupData, ilevels, baselineDPS);
+  const trinketNames = getSortedTrinketNames(stacks);
+  const maxDPS = getMaxDPS(groupData, baselineDPS);
   const trinketCount = size(groupData.trinkets);
 
   return { ilevels, trinketNames, stacks, maxDPS, trinketCount, data: groupData, name: groupData.name };

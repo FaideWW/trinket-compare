@@ -3,6 +3,7 @@ import { select } from 'd3-selection';
 import { scaleBand, scaleLinear, scaleOrdinal } from 'd3-scale';
 import { max } from 'd3-array';
 import { stack } from 'd3-shape';
+import { schemePaired } from 'd3-scale-chromatic';
 import { axisTop, axisLeft } from 'd3-axis';
 
 const CONTAINER_WIDTH = 960;
@@ -10,35 +11,35 @@ const BAR_HEIGHT = 20;
 
 const MARGIN_TOP = 30;
 const MARGIN_BOTTOM = 20;
-const MARGIN_LEFT = 100;
+const MARGIN_LEFT = 250;
 const MARGIN_RIGHT = 20;
 
 const COLOR_ARRAY = ['#98abc5', '#8a89a6', '#7b6888', '#6b486b', '#a05d56', '#d0743c', '#ff8c00'];
 
-function makeD3Renderer(svgSelector) {
-  const svg = select(svgSelector);
-  const width = CONTAINER_WIDTH - MARGIN_LEFT - MARGIN_RIGHT;
+// function makeD3Renderer(svgSelector) {
+//   const svg = select(svgSelector);
+//   const width = CONTAINER_WIDTH - MARGIN_LEFT - MARGIN_RIGHT;
 
-  svg
-    .attr('width', CONTAINER_WIDTH);
+//   svg
+//     .attr('width', CONTAINER_WIDTH);
 
-  const g = svg.append('g').attr('transform', `translate(${MARGIN_LEFT},${MARGIN_TOP})`);
+//   const g = svg.append('g').attr('transform', `translate(${MARGIN_LEFT},${MARGIN_TOP})`);
 
-  const x = scaleLinear()
-    .rangeRound([0, width]);
+//   const x = scaleLinear()
+//     .rangeRound([0, width]);
 
-  const z = scaleOrdinal()
-    .range(COLOR_ARRAY);
+//   const z = scaleOrdinal()
+//     .range(COLOR_ARRAY);
 
-  return (data) {
-    const { ilevels, trinketNames, stacks, maxDPS, trinketCount, data } = dataJSON;
+//   return (data) {
+//     const { ilevels, trinketNames, stacks, maxDPS, trinketCount, data } = dataJSON;
 
-    const height = trinketCount * (BAR_HEIGHT);
-    const containerHeight = height + MARGIN_TOP + MARGIN_BOTTOM;
-    svg.attr('height', containerHeight);
-  }
+//     const height = trinketCount * (BAR_HEIGHT);
+//     const containerHeight = height + MARGIN_TOP + MARGIN_BOTTOM;
+//     svg.attr('height', containerHeight);
+//   }
 
-}
+// }
 
 export default function renderD3Graph(svgSelector, dataJSON) {
   const svg = select(svgSelector);
@@ -63,8 +64,8 @@ export default function renderD3Graph(svgSelector, dataJSON) {
   const x = scaleLinear()
     .rangeRound([0, width]);
 
-  const z = scaleOrdinal()
-    .range(COLOR_ARRAY);
+  const z = scaleOrdinal(schemePaired);
+  console.log(ilevels);
 
   const bars = stack()
     .keys(ilevels);
@@ -77,7 +78,10 @@ export default function renderD3Graph(svgSelector, dataJSON) {
     .selectAll('g')
     .data(bars(stacks))
     .enter().append('g')
-      .attr('fill', d => z(d[0]))
+      .attr('fill', d => {
+        console.log(d);
+        return z(d.key) ;
+      })
     .selectAll('rect')
     .data((d) => d)
     .enter().append('rect')
